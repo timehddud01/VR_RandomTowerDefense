@@ -6,28 +6,31 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public class MoveManager : MonoBehaviour
 {
-    /// <summary>
-    /// NavMesh Agent 컴포넌트
-    /// </summary>
+
     private NavMeshAgent agent;
+   private Transform[] waypoints;
 
-    /// <summary>
-    /// 순서대로 방문할 경유지 목록.
-    /// 마지막 요소가 최종 목적지(Goal)가 됩니다.
-    /// </summary>
-    public Transform[] waypoints;
 
-    /// <summary>
-    /// 현재 목표로 하는 경유지의 인덱스
-    /// </summary>
+
+
     private int currentWaypointIndex = 0;
 
-    void Start()
+
+    void Awake()
     {
         // NavMesh Agent 컴포넌트를 가져옵니다.
         agent = GetComponent<NavMeshAgent>();
 
-        // 경유지가 설정되어 있고, 목록이 비어있지 않다면 첫 번째 경유지로 이동을 시작합니다.
+
+    }
+
+
+     public void SetPath(Transform[] newWaypoints)
+    {
+        waypoints = newWaypoints;
+        currentWaypointIndex = 0;
+
+        // 경로가 유효하면 첫 번째 경유지로 이동을 시작합니다.
         if (waypoints != null && waypoints.Length > 0)
         {
             agent.destination = waypoints[currentWaypointIndex].position;
@@ -37,10 +40,11 @@ public class MoveManager : MonoBehaviour
     void Update()
     {
         // 모든 경유지를 방문했다면 더 이상 처리하지 않습니다.
-        if (currentWaypointIndex >= waypoints.Length)
-        {
-            return;
-        }
+        if (waypoints == null || currentWaypointIndex >= waypoints.Length)
+            {
+                return;
+            }
+
 
         // 에이전트가 현재 목표 경유지에 도착했는지 확인합니다.
         // agent.pathPending: 경로 계산이 아직 진행 중인지 여부 (false여야 함)

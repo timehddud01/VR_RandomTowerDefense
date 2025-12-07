@@ -62,12 +62,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5259488556252858635}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 647093806a851dd49a1d82c06ba8a686, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackRange: 15
+  attackRange: 5
   fireRate: 1
   damage: 25
   enemyTag: Enemy
@@ -181,7 +181,11 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 6258637918639367044}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5979441413895591412, guid: 64bc0ccc2de2dd64f92958be43b94997,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7141595331765047990}
   m_SourcePrefab: {fileID: 100100000, guid: 64bc0ccc2de2dd64f92958be43b94997, type: 3}
 --- !u!4 &7394584689181259122 stripped
 Transform:
@@ -189,6 +193,28 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 3775680949341584552}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &7394584689181682012 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5979441413895591412, guid: 64bc0ccc2de2dd64f92958be43b94997,
+    type: 3}
+  m_PrefabInstance: {fileID: 3775680949341584552}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7141595331765047990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7394584689181682012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 647093806a851dd49a1d82c06ba8a686, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackRange: 45
+  fireRate: 1
+  damage: 25
+  enemyTag: Enemy
 --- !u!1001 &9082878815825209966
 PrefabInstance:
   m_ObjectHideFlags: 0
