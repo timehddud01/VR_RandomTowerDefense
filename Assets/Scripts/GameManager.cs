@@ -119,4 +119,6 @@ public class GameManager : MonoBehaviour
             GameOver(false); //패배판정
         }
     }
+
+
 }

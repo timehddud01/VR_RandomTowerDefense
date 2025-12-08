@@ -12,7 +12,10 @@ public class EnemyDie : MonoBehaviour
     // === 1. EnemyMaker로부터 초기 정보를 받는 함수 ===
 
     public void SetMakerAndTarget(EnemyMaker enemyMaker, Transform targetEndPoint) 
-    {
+    {    
+    
+        // EnemyDie는 배열의 마지막 요소를 최종 목표로 사용합니다.
+
         // 1. maker 참조 저장
         maker = enemyMaker;
         
