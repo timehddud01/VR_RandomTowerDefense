@@ -6,6 +6,11 @@ TagManager:
   tags:
   - Floor
   - Enemy
+  - towerPlatform
+  - common_lavaGuardian
+  - comon_ice
+  - magic_lavaGuardian
+  - magic_ice
   layers:
   - Default
   - TransparentFX
@@ -13,8 +18,8 @@ TagManager:
   - Player
   - Water
   - UI
-  - 
-  - 
+  - Platform
+  - DefenseTower
   - 
   - 
   - 
