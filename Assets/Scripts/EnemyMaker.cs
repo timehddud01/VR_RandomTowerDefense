@@ -14,8 +14,7 @@ public class EnemyMaker : MonoBehaviour
     //1라운드 당 생성 적 수
     public int firstEnemyPoolSize = 20;
     
-    // 아직 살아있는 적 수 확인
-    int aliveEnemyCount;
+
 
     public Transform enemySpawnPoint;
 
@@ -97,7 +96,7 @@ if (enemyWaypoints == null || enemyWaypoints.Length == 0)
             waveSize = targetPoolSize; //일반 적은 풀 사이즈 만큼
         }
 
-        aliveEnemyCount = waveSize; //살아있는 적 수 초기화
+
 
         for (int i = 0; i < waveSize; i++)
         {
@@ -115,7 +114,11 @@ if (enemyWaypoints == null || enemyWaypoints.Length == 0)
 
             if (newEnemy != null)
             { //////////////////////////////////////////
-
+            Enemy enemy = newEnemy.GetComponent<Enemy>();
+            if (enemy != null)
+            {
+                enemy.SetMaker(this);
+            }
             
     MoveManagerForSpider moveManager = newEnemy.GetComponentInChildren<MoveManagerForSpider>();
     if (moveManager != null)
@@ -159,12 +162,7 @@ if (enemyWaypoints == null || enemyWaypoints.Length == 0)
     {
         enemy.SetActive(false);
         enemyPool.Add(enemy);
-        aliveEnemyCount--; //살아있는 적 수 줄이기
-        if (aliveEnemyCount <=0)
-        {
-            
-            GameManager.instance.EndRound(); // 라운드 종료 호출
-        }
+
     }
 
 }

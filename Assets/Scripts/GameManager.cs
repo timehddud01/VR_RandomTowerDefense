@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     public int userLife = 10; //플레이 목숨 개수
 
     float waitingTime2NextRound = 3.0f; //다음 라운드까지 대기 시간
-
+    private int enemiesAlive = 0;
     public EnemyMaker enemyMaker;
     
     public static GameManager instance;//GameManager static으로 만듦
@@ -45,8 +45,20 @@ public class GameManager : MonoBehaviour
     //라운드 시작
     void StartRound()
     {   
-         //보스 라운드인가??
         bool isBossRound = (currentRound % bossRoundCycle == 0);
+         //보스 라운드인가??
+         if (isBossRound)
+        {
+            enemiesAlive = 1;
+        }
+        else
+        {
+            // EnemyMaker의 로직을 참고하여 적 수를 계산합니다.
+            // 라운드가 오를수록 적의 수가 1씩 증가합니다.
+            int waveSize = enemyMaker.firstEnemyPoolSize + (currentRound - 1);
+            enemiesAlive = waveSize;
+        }
+
        
         if ( isBossRound )
         {
@@ -78,6 +90,17 @@ public class GameManager : MonoBehaviour
             Debug.Log(currentRound + "라운드 종료");
 
             StartCoroutine(WaitUntilNextRound(waitingTime2NextRound)); //5초 후 다음 라운드 시작
+        }
+    }
+        public void EnemyDestroyed()
+    {
+        enemiesAlive--;
+        Debug.Log("적이 제거되었습니다. 남은 적: " + enemiesAlive);
+
+        // 살아있는 적이 더 이상 없으면 라운드를 종료합니다.
+        if (enemiesAlive <= 0)
+        {
+            EndRound();
         }
     }
 

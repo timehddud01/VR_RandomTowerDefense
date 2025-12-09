@@ -33,9 +33,9 @@ public class TowerAttack : MonoBehaviour
     void Update()
     {
         // 타겟이 유효한지 검사 및 리스트 정리
-        if (currentTarget == null)
+        if (currentTarget == null || !currentTarget.gameObject.activeInHierarchy)
         {
-            enemiesInRange.RemoveAll(enemy => enemy == null);
+             enemiesInRange.RemoveAll(enemy => enemy == null || !enemy.gameObject.activeInHierarchy);
             if (enemiesInRange.Count > 0)
             {
                 currentTarget = enemiesInRange.First();

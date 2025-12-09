@@ -9,14 +9,19 @@ public class Goals : MonoBehaviour
         // 충돌한 오브젝트가 Enemy인지 확인합니다.
      if (other.CompareTag("Enemy"))
         {
+            Enemy enemy = other.GetComponent<Enemy>();
+
             // GameManager에 라이프 감소를 요청합니다.
-            if (GoalManager.instance != null)
+            if (enemy != null && !enemy.IsDead())
             {
-                GoalManager.instance.EnemyReachedGoal();
+
+                                if (GoalManager.instance != null)
+                {
+                    GoalManager.instance.EnemyReachedGoal();
+                }
             }
 
-            // 목표에 도달한 적 오브젝트를 파괴합니다.
-            Destroy(other.gameObject);
+             enemy.Die();
         }
     }
 }
