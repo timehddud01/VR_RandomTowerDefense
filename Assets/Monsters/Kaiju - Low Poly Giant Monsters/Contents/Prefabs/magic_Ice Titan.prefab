@@ -1174,6 +1174,7 @@ GameObject:
   - component: {fileID: 1943172870309905602}
   - component: {fileID: 1943172870300068664}
   - component: {fileID: 5639664365710176206}
+  - component: {fileID: 4597744321775661556}
   m_Layer: 7
   m_Name: magic_Ice Titan
   m_TagString: magic_ice
@@ -1236,6 +1237,23 @@ MonoBehaviour:
   grade: 1
   sellPrice: 50
   ownerSlot: {fileID: 0}
+--- !u!114 &4597744321775661556
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1943172870309419234}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cadc3632cc34c6478364270420ef42e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackRange: 15
+  fireRate: 1
+  damage: 25
+  enemyTag: Enemy
+  attackVFX: {fileID: 0}
 --- !u!1 &1943172870309419236
 GameObject:
   m_ObjectHideFlags: 0

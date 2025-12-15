@@ -17,6 +17,7 @@ public class TowerAttack : MonoBehaviour
     private Transform currentTarget;
     private float fireCooldown = 0f;
     private Animator animator;
+     public GameObject attackVFX;
 
     void Start()
     {
@@ -40,6 +41,11 @@ public class TowerAttack : MonoBehaviour
             {
                 currentTarget = enemiesInRange.First();
             }
+
+                        else
+            {
+                currentTarget = null;
+            }
         }
 
         if (currentTarget != null)
@@ -52,8 +58,15 @@ public class TowerAttack : MonoBehaviour
                 Attack();
                 fireCooldown = 1f / fireRate;
             }
-            fireCooldown -= Time.deltaTime;
+
         }
+        else if(currentTarget == null)
+        {
+            // animator.ResetTrigger("Attack");
+            // animator.Play("Idle");
+        }
+
+        fireCooldown -= Time.deltaTime;
     } // <--- 여기에 닫는 괄호가 빠져 있었습니다!
 
     // 이제 이 함수들은 Update 밖으로 나와서 정상적으로 작동합니다.
@@ -86,7 +99,13 @@ public class TowerAttack : MonoBehaviour
         {
             enemyComponent.TakeDamage(damage);
             Debug.Log(currentTarget.name + "을(를) 공격!");
+            
+            if (attackVFX != null)
+            {
+                Instantiate(attackVFX, currentTarget.position, Quaternion.identity);
+            }
         }
+        
 
         if (animator != null)
         {
