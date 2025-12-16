@@ -102,7 +102,9 @@ public class TowerAttack : MonoBehaviour
             
             if (attackVFX != null)
             {
-                Instantiate(attackVFX, currentTarget.position, Quaternion.identity);
+                GameObject vfx = Instantiate(attackVFX, currentTarget.position, Quaternion.identity);
+                ParticleSystem ps = vfx.GetComponent<ParticleSystem>();
+                Destroy(vfx, ps != null ? ps.main.duration : 2f);
             }
         }
         

@@ -7,13 +7,13 @@ public class PlayerMove : MonoBehaviour
     // //CharacterController 컴포넌트
     CharacterController cc;
 
-    // public float jumpPower = 5;
+    public float jumpPower = 5;
 
 
-    //중력 가속도의 크기
-    // public float gravity = -10;
-    //수직 속도
-    // float yVelocity = 0;
+    // 중력 가속도의 크기
+    public float gravity = -10;
+    // 수직 속도
+    float yVelocity = 0;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -39,16 +39,16 @@ public class PlayerMove : MonoBehaviour
         //2. 방향을 만든다
         //2.1 중력을 적용한 수직 방향 추가 v = v0 + at
         //가속도와 속도, 위치에 대한 개념 인지
-        // yVelocity += gravity * Time.deltaTime;
+        yVelocity += gravity * Time.deltaTime;
 
-        // if(cc.isGrounded)
-        // {
-        //     yVelocity = 0;
-        // }
-        // if (ARAVRInput.GetDown(ARAVRInput.Button.Two,ARAVRInput.Controller.RTouch)){
-        //     yVelocity = jumpPower;
-        // }
-        // dir.y = yVelocity;
+        if(cc.isGrounded)
+        {
+            yVelocity = 0;
+        }
+        if (ARAVRInput.GetDown(ARAVRInput.Button.Two,ARAVRInput.Controller.RTouch)){
+            yVelocity = jumpPower;
+        }
+        dir.y = yVelocity;
         // //3. 이동한다.
         if (Input.GetKey(KeyCode.E))
         {

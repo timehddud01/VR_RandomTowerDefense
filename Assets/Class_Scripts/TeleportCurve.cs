@@ -29,11 +29,11 @@ public class TeleportCurve : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(ARAVRInput.GetDown(ARAVRInput.Button.HandTrigger, ARAVRInput.Controller.RTouch)){
+        if(ARAVRInput.GetDown(ARAVRInput.Button.IndexTrigger, ARAVRInput.Controller.RTouch)){
             lr.enabled = true;
 
         }
-        else if(ARAVRInput.GetUp(ARAVRInput.Button.HandTrigger, ARAVRInput.Controller.RTouch)){
+        else if(ARAVRInput.GetUp(ARAVRInput.Button.IndexTrigger, ARAVRInput.Controller.RTouch)){
             lr.enabled = false;
             if(teleportCircleUI.gameObject.activeSelf){
                 GetComponent<CharacterController>().enabled = false;
@@ -42,7 +42,7 @@ public class TeleportCurve : MonoBehaviour
             }
             teleportCircleUI.gameObject.SetActive(false);
         }
-        else if(ARAVRInput.Get(ARAVRInput.Button.HandTrigger, ARAVRInput.Controller.RTouch)){
+        else if(ARAVRInput.Get(ARAVRInput.Button.IndexTrigger, ARAVRInput.Controller.RTouch)){
             MakeLines();
         }
     }

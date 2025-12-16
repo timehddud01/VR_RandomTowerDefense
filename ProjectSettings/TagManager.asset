@@ -11,6 +11,8 @@ TagManager:
   - comon_ice
   - magic_lavaGuardian
   - magic_ice
+  - Terrain
+  - Bomb
   layers:
   - Default
   - TransparentFX
@@ -21,7 +23,7 @@ TagManager:
   - Platform
   - DefenseTower
   - Bomb
-  - 
+  - Terrain
   - 
   - 
   - 
