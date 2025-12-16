@@ -5,42 +5,45 @@ using UnityEngine;
 public class BombThrough : MonoBehaviour
 {
     // Start is called before the first frame update
-    void Start()
-    {
-        int terrainLayer = LayerMask.NameToLayer("Terrain");
-        int myLayer = gameObject.layer;
 
-         if (terrainLayer >= 0)
+     public GameObject BOmbVFX;
+
+   private void OnCollisionEnter(Collision collision)
+    {
+        // Floor 태그에 닿았는지 확인
+        if (collision.gameObject.CompareTag("Floor"))
         {
-            Physics.IgnoreLayerCollision(myLayer, terrainLayer, true);
+            ActivateBomb();
         }
-
-        Collider myCollider = GetComponent<Collider>();
-        if (myCollider != null)
-        {
-            // 태그로 찾기
-            GameObject[] taggedTerrains = GameObject.FindGameObjectsWithTag("Terrain");
-            foreach (GameObject t in taggedTerrains)
-            {
-                Collider tc = t.GetComponent<Collider>();
-                if (tc != null) Physics.IgnoreCollision(myCollider, tc);
-            }
-
-            // TerrainCollider로 찾기 (Unity Terrain 사용 시)
-            TerrainCollider[] terrainColliders = FindObjectsOfType<TerrainCollider>();
-            foreach (TerrainCollider tc in terrainColliders)
-            {
-                Physics.IgnoreCollision(myCollider, tc);
-            }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnTriggerEnter(Collider other)
     {
-
+        // Floor 태그에 닿았는지 확인 (Trigger인 경우 대비)
+        if (other.CompareTag("Floor"))
+        {
+            ActivateBomb();
+        }
     }
 
+    private void ActivateBomb()
+    {
+        // 맵에 있는 모든 Enemy 찾기
+        Enemy[] enemies = FindObjectsOfType<Enemy>();
 
-}
-}
+        foreach (Enemy enemy in enemies)
+        {
+            // 살아있는 적에게만 데미지 적용
+            if (enemy != null && !enemy.IsDead())
+            {
+                enemy.TakeDamage(100f);
+            }
+        }
+        GameObject vfx = Instantiate(BOmbVFX, new Vector3(0, 10, 0), Quaternion.identity);
+                ParticleSystem ps = vfx.GetComponent<ParticleSystem>();
+                Destroy(vfx, ps != null ? ps.main.duration : 2f);
 
+        // 자신 파괴
+        Destroy(gameObject);
+    }
+}
