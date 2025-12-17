@@ -17,11 +17,29 @@ public class TowerAttack : MonoBehaviour
     private Transform currentTarget;
     private float fireCooldown = 0f;
     private Animator animator;
-     public GameObject attackVFX;
+    public GameObject attackVFX;
+
+    // --- 위치 보정용 변수 추가 ---
+    private Vector3 initialPosition;
+    private Quaternion initialRotation;
+    private float positionResetTimer = 0f;
+    private float resetInterval = 5f; // 5초 주기
+    // -------------------------
 
     void Start()
     {
+        // 처음 위치와 회전값을 저장
+        initialPosition = transform.position;
+        initialRotation = transform.rotation;
+
         animator = GetComponent<Animator>();
+        
+        // 애니메이션이 위치를 옮기지 못하도록 설정 (루트 모션 제어)
+        if (animator != null)
+        {
+            animator.applyRootMotion = false; 
+        }
+
         SphereCollider rangeCollider = GetComponent<SphereCollider>();
         if (rangeCollider == null)
         {
@@ -33,16 +51,23 @@ public class TowerAttack : MonoBehaviour
 
     void Update()
     {
-        // 타겟이 유효한지 검사 및 리스트 정리
+        // 1. 위치 보정 로직 (5초마다 실행)
+        positionResetTimer += Time.deltaTime;
+        if (positionResetTimer >= resetInterval)
+        {
+            ResetPosition();
+            positionResetTimer = 0f;
+        }
+
+        // 2. 타겟 관리 및 공격 로직
         if (currentTarget == null || !currentTarget.gameObject.activeInHierarchy)
         {
-             enemiesInRange.RemoveAll(enemy => enemy == null || !enemy.gameObject.activeInHierarchy);
+            enemiesInRange.RemoveAll(enemy => enemy == null || !enemy.gameObject.activeInHierarchy);
             if (enemiesInRange.Count > 0)
             {
                 currentTarget = enemiesInRange.First();
             }
-
-                        else
+            else
             {
                 currentTarget = null;
             }
@@ -50,26 +75,33 @@ public class TowerAttack : MonoBehaviour
 
         if (currentTarget != null)
         {
-            // 타겟을 바라봄
-            transform.LookAt(currentTarget);
+            // 타겟을 바라봄 (Y축만 회전하게 하여 바닥에 파묻히는 것 방지)
+            Vector3 targetDir = currentTarget.position - transform.position;
+            targetDir.y = 0; // 타워가 위아래로 꺾이지 않게 함
+            if (targetDir != Vector3.zero)
+            {
+                transform.rotation = Quaternion.LookRotation(targetDir);
+            }
 
             if (fireCooldown <= 0f)
             {
                 Attack();
                 fireCooldown = 1f / fireRate;
             }
-
-        }
-        else if(currentTarget == null)
-        {
-            // animator.ResetTrigger("Attack");
-            // animator.Play("Idle");
         }
 
         fireCooldown -= Time.deltaTime;
-    } // <--- 여기에 닫는 괄호가 빠져 있었습니다!
+    }
 
-    // 이제 이 함수들은 Update 밖으로 나와서 정상적으로 작동합니다.
+    // 위치를 강제로 초기값으로 돌리는 함수
+    void ResetPosition()
+    {
+        transform.position = initialPosition;
+        // 회전은 타겟을 바라봐야 하므로 필요 시에만 초기화하거나 유지합니다.
+        // transform.rotation = initialRotation; 
+        Debug.Log(gameObject.name + " 위치 보정 완료");
+    }
+
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag(enemyTag))
@@ -92,13 +124,12 @@ public class TowerAttack : MonoBehaviour
 
     void Attack()
     {
-        if (currentTarget == null) return; // 안전장치 추가
+        if (currentTarget == null) return;
 
         Enemy enemyComponent = currentTarget.GetComponent<Enemy>();
         if (enemyComponent != null)
         {
             enemyComponent.TakeDamage(damage);
-            Debug.Log(currentTarget.name + "을(를) 공격!");
             
             if (attackVFX != null)
             {
@@ -107,7 +138,6 @@ public class TowerAttack : MonoBehaviour
                 Destroy(vfx, ps != null ? ps.main.duration : 2f);
             }
         }
-        
 
         if (animator != null)
         {

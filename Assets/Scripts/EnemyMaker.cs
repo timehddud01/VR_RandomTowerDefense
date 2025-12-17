@@ -118,6 +118,11 @@ if (enemyWaypoints == null || enemyWaypoints.Length == 0)
             if (enemy != null)
             {
                 enemy.SetMaker(this);
+                 if (RoundManager.instance != null)
+                {
+                    float health = RoundManager.instance.GetWaveHP(currentRound - 1);
+                    enemy.Setup(health, currentRound - 1);
+                }
             }
             
     MoveManagerForSpider moveManager = newEnemy.GetComponentInChildren<MoveManagerForSpider>();

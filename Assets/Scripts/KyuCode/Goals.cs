@@ -21,7 +21,7 @@ public class Goals : MonoBehaviour
                 }
             }
 
-             enemy.Die();
+            enemy.Die(false);
         }
     }
 }

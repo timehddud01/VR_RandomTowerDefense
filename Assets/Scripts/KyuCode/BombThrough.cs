@@ -8,6 +8,14 @@ public class BombThrough : MonoBehaviour
 
      public GameObject BOmbVFX;
 
+    private Vector3 startPos;
+    private Quaternion startRot;
+
+    void Start()
+    {
+        startPos = transform.position;
+        startRot = transform.rotation;
+    }
    private void OnCollisionEnter(Collision collision)
     {
         // Floor 태그에 닿았는지 확인
@@ -44,6 +52,14 @@ public class BombThrough : MonoBehaviour
                 Destroy(vfx, ps != null ? ps.main.duration : 2f);
 
         // 자신 파괴
-        Destroy(gameObject);
+        transform.position = startPos;
+        transform.rotation = startRot;
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+        }
+        gameObject.SetActive(false);
     }
 }

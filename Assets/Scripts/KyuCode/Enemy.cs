@@ -7,7 +7,8 @@ public class Enemy : MonoBehaviour
     /// </summary>
     public float maxHealth = 100f;
     private EnemyMaker maker;
-        private bool isDead = false;
+    private bool isDead = false;
+    private int waveIndex = 0;
 
     /// <summary>
     /// 현재 체력
@@ -41,24 +42,33 @@ public class Enemy : MonoBehaviour
         if (currentHealth <= 0)
         {
             // TODO: 여기에 골드 획득, 파괴 이펙트 생성 등의 코드를 추가할 수 있습니다.
-            Die();
+            Die(true);
         }
 
         
     }
 
-        public void Setup(float health)
+    public void Setup(float health, int wave)
     {
         maxHealth = health;
         currentHealth = maxHealth;
+        waveIndex = wave;
     }
 
 
-        public void Die()
+
+    public void Die(bool killedByPlayer = true)
     {
         if (isDead) return;
         isDead = true;
         // TODO: 여기에 골드 획득, 파괴 이펙트 생성 등의 코드를 추가할 수 있습니다.
+
+        // 플레이어에 의해 죽었을 경우에만 점수 추가
+        if (killedByPlayer && Score.instance != null)
+        {
+            // 라운드(웨이브) 인덱스는 0부터 시작하므로 +1을 하여 라운드 번호로 사용하고, 100을 곱해 점수를 추가합니다.
+            Score.instance.AddScore((waveIndex + 1) * 100);
+        }
     if (GameManager.instance != null)
         {
              GameManager.instance.EnemyDestroyed();

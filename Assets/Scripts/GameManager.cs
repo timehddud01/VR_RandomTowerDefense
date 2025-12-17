@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+
 
 public class GameManager : MonoBehaviour
 {
@@ -14,6 +16,7 @@ public class GameManager : MonoBehaviour
     float waitingTime2NextRound = 3.0f; //다음 라운드까지 대기 시간
     private int enemiesAlive = 0;
     public EnemyMaker enemyMaker;
+    public TextMeshPro roundtext;
     
     public static GameManager instance;//GameManager static으로 만듦
     
@@ -53,6 +56,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            roundtext.text = "Round:\n" + currentRound;
             // EnemyMaker의 로직을 참고하여 적 수를 계산합니다.
             // 라운드가 오를수록 적의 수가 1씩 증가합니다.
             int waveSize = enemyMaker.firstEnemyPoolSize + (currentRound - 1);
@@ -87,6 +91,10 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+             if (currentRound % 2 == 0 && BombPool.instance != null)
+            {
+                BombPool.instance.ReplenishBomb();
+            }
             Debug.Log(currentRound + "라운드 종료");
 
             StartCoroutine(WaitUntilNextRound(waitingTime2NextRound)); //5초 후 다음 라운드 시작
