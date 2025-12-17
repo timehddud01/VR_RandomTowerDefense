@@ -1,10 +1,19 @@
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class TowerGenerator : MonoBehaviour
-{  
+{
+    // ==========================================
+    // 외부 스크립트 접근용 싱글톤
+    // ==========================================
+    public static TowerGenerator Instance;
+
+    private void Awake()
+    {
+        if (Instance == null) Instance = this;
+    }
+
     [Header("Raycast")]
     public LayerMask platformLayer;
 
@@ -22,20 +31,20 @@ public class TowerGenerator : MonoBehaviour
 
     void Update()
     {
-        // 항상 Hover 감지
+        // 항상 Hover 감지 (왼손 기준)
         HandleHoverRaycast();
 
-        // 버튼 One → 랜덤 일반 타워 설치
-        if (ARAVRInput.GetDown(ARAVRInput.Button.One))
+        // [왼손(LTouch) - Button One] 일반 타워 생성
+        if (ARAVRInput.GetDown(ARAVRInput.Button.One, ARAVRInput.Controller.LTouch))
         {
             TryPlaceRandomCommonTower();
         }
 
-        // 버튼 Two → 타워 합성
-        if (ARAVRInput.GetDown(ARAVRInput.Button.Two))
-        {
-            TryMergeTower();
-        }
+        // [오른손(RTouch) - Button Two] (구버전) 타워 합성 - 필요 시 유지
+        // if (ARAVRInput.GetDown(ARAVRInput.Button.Two))
+        // {
+        //     TryMergeTower();
+        // }
     }
 
     // ============================
@@ -43,7 +52,8 @@ public class TowerGenerator : MonoBehaviour
     // ============================
     void HandleHoverRaycast()
     {
-        Ray ray = new Ray(ARAVRInput.RHandPosition, ARAVRInput.RHandDirection);
+        // 왼손 기준 레이캐스트
+        Ray ray = new Ray(ARAVRInput.LHandPosition, ARAVRInput.LHandDirection);
         RaycastHit hitInfo;
 
         if (Physics.Raycast(ray, out hitInfo, 200f, platformLayer))
@@ -67,57 +77,34 @@ public class TowerGenerator : MonoBehaviour
     // ============================
     void TryPlaceRandomCommonTower()
     {
-        if (commonTowers == null || commonTowers.Length == 0)
-        {
-            Debug.LogWarning("Common 등급 타워 프리팹이 설정되지 않았습니다.");
-            return;
-        }
+        if (commonTowers == null || commonTowers.Length == 0) return;
 
-        Ray ray = new Ray(ARAVRInput.RHandPosition, ARAVRInput.RHandDirection);
+        // 왼손 위치에서 레이 발사
+        Ray ray = new Ray(ARAVRInput.LHandPosition, ARAVRInput.LHandDirection);
         RaycastHit hitInfo;
 
-        if (!Physics.Raycast(ray, out hitInfo, 200f, platformLayer))
-            return;
+        // 1. 플랫폼 레이어 감지 실패 시 리턴
+        if (!Physics.Raycast(ray, out hitInfo, 200f, platformLayer)) return;
 
         PlatformSlot slot = hitInfo.collider.GetComponent<PlatformSlot>();
 
-        if (slot == null)
-        {
-            Debug.LogWarning("PlatformSlot 스크립트가 플랫폼에 없습니다.");
-            return;
-        }
-
-        if (slot.isOccupied)
-        {
-            Debug.Log("❌ 이미 설치된 플랫폼입니다! 추가 설치 불가.");
-            return;
-        }
+        // 2. 슬롯 컴포넌트 없거나, 이미 타워가 있으면 리턴
+        if (slot == null || slot.isOccupied) return;
 
         Transform location = slot.transform.Find("platform_location");
-        if (location == null)
-        {
-            Debug.LogWarning("platform_location 이 존재하지 않습니다.");
-            return;
-        }
+        if (location == null) return;
 
-        // 일반 등급 중 하나를 랜덤으로 선택
+        // 3. 프리팹 가져오기
         GameObject prefab = GetRandomPrefabByGrade(TowerData.TowerGrade.Common);
-        if (prefab == null)
-        {
-            Debug.LogWarning("Common 등급 타워 프리팹이 비어 있습니다.");
-            return;
-        }
+        if (prefab == null) return;
 
+        // 4. 생성 및 슬롯 등록
         GameObject tower = Instantiate(prefab, location.position, Quaternion.identity);
-
-        // PlatformSlot과 연결
         slot.SetTower(tower);
-
-        Debug.Log("✅ 랜덤 일반 타워 설치 완료!");
     }
 
     // ============================
-    //  타워 합성 시도 (Button.Two)
+    //  (구버전) 타워 합성 시도
     // ============================
     void TryMergeTower()
     {
@@ -128,25 +115,13 @@ public class TowerGenerator : MonoBehaviour
             return;
 
         PlatformSlot slot = hit.collider.GetComponent<PlatformSlot>();
-        if (slot == null || !slot.isOccupied || slot.currentTower == null)
-        {
-            Debug.Log("⚠ 합성할 타워가 없습니다.");
-            return;
-        }
+        if (slot == null || !slot.isOccupied || slot.currentTower == null) return;
 
         TowerData targetTowerData = slot.currentTower.GetComponent<TowerData>();
-        if (targetTowerData == null)
-        {
-            Debug.LogWarning("선택한 타워에 TowerData가 없습니다.");
-            return;
-        }
+        if (targetTowerData == null) return;
 
         // 에픽 등급이면 더 이상 합성 불가
-        if (targetTowerData.grade == TowerData.TowerGrade.Epic)
-        {
-            Debug.Log("⚠ 에픽 등급은 더 이상 합성할 수 없습니다.");
-            return;
-        }
+        if (targetTowerData.grade == TowerData.TowerGrade.Epic) return;
 
         string targetTag = slot.currentTower.tag;
 
@@ -165,7 +140,6 @@ public class TowerGenerator : MonoBehaviour
         // 합성을 위해서는 최소 2개 필요
         if (sameTagTowers.Count < 2)
         {
-            Debug.Log("❌ 동일한 타워가 배치되지 않았습니다!");
             ShowWarningUI();
             return;
         }
@@ -209,23 +183,31 @@ public class TowerGenerator : MonoBehaviour
         TowerData.TowerGrade nextGrade = targetTowerData.grade + 1;
         GameObject nextPrefab = GetRandomPrefabByGrade(nextGrade);
 
-        if (nextPrefab == null)
-        {
-            Debug.LogWarning("다음 등급 타워 프리팹이 설정되지 않았습니다. 등급: " + nextGrade);
-            return;
-        }
+        if (nextPrefab == null) return;
 
         Transform location = slot.transform.Find("platform_location");
-        if (location == null)
-        {
-            Debug.LogWarning("platform_location 이 존재하지 않습니다.");
-            return;
-        }
+        if (location == null) return;
 
         GameObject newTower = Instantiate(nextPrefab, location.position, Quaternion.identity);
         slot.SetTower(newTower);
+    }
 
-        Debug.Log("✨ 타워 합성 성공! 등급 업: " + targetTowerData.grade + " → " + nextGrade);
+    // =========================================================
+    //  [TowerInteraction 호출용] 타워 합성 생성 함수
+    // =========================================================
+    public void CreateMergedTower(TowerData.TowerGrade grade, PlatformSlot targetSlot)
+    {
+        // 1. 프리팹 가져오기
+        GameObject prefab = GetRandomPrefabByGrade(grade);
+        if (prefab == null) return;
+
+        // 2. 생성 위치 설정
+        Transform spawnLoc = targetSlot.transform.Find("platform_location");
+        Vector3 spawnPos = (spawnLoc != null) ? spawnLoc.position : targetSlot.transform.position;
+
+        // 3. 생성 및 슬롯 등록
+        GameObject newTower = Instantiate(prefab, spawnPos, Quaternion.identity);
+        targetSlot.SetTower(newTower);
     }
 
     // ============================
@@ -263,14 +245,16 @@ public class TowerGenerator : MonoBehaviour
 
     IEnumerator ShowWarningUIRoutine()
     {
-        warningUI.SetActive(true);
-        yield return new WaitForSeconds(0.3f);
-        warningUI.SetActive(false);
+        if (warningUI != null)
+        {
+            warningUI.SetActive(true);
+            yield return new WaitForSeconds(0.3f);
+            warningUI.SetActive(false);
+        }
     }
 
     void ShowWarningUI()
     {
-        if (warningUI == null) return;
         StartCoroutine(ShowWarningUIRoutine());
     }
 }

@@ -58,12 +58,14 @@ public class PlatformSlot : MonoBehaviour
     {
         // UI 켜기
         selectUI.SetActive(true);
+        //print("ui show event work");
 
         // 지정된 시간만큼 유지
         yield return new WaitForSeconds(hoverDuration);
 
         // 추가 호출이 없으면 자동으로 끄기
         selectUI.SetActive(false);
+        //print("ui now disappeared");
     }
 
     // ==============================
