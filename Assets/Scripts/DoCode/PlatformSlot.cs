@@ -74,6 +74,7 @@ public class PlatformSlot : MonoBehaviour
     public void SetTower(GameObject tower)
     {
         currentTower = tower;
+        print(currentTower);
         isOccupied = (tower != null);
 
         if (tower != null)

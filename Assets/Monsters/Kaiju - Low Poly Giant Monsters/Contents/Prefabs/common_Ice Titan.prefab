@@ -1231,7 +1231,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e800d322ea3f344bb1394e32182a4f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  towerId: c
+  towerId: common_Ice Titan
   grade: 0
   sellPrice: 10
   ownerSlot: {fileID: 0}

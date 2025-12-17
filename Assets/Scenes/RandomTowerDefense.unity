@@ -9465,7 +9465,7 @@ Transform:
   m_GameObject: {fileID: 1346742945}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.98025084, y: 17.787397, z: -2.2588387}
+  m_LocalPosition: {x: 0.98025084, y: 17.9, z: -2.2588387}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -12841,7 +12841,7 @@ MonoBehaviour:
   holdOffset: {x: 0, y: 0, z: 2}
   playerHead: {fileID: 485166388}
   gazeLoadingBar: {fileID: 810297884}
-  gazeChargeTime: 2
+  gazeChargeTime: 1
   maxGazeDistance: 1000
 --- !u!120 &1833410801
 LineRenderer:
@@ -15440,10 +15440,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5745474929452833322, guid: e4e31b637e50b7446a0094ab16100bc1,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7258408167504752622, guid: e4e31b637e50b7446a0094ab16100bc1,
         type: 3}
       propertyPath: m_Name
       value: Map
+      objectReference: {fileID: 0}
+    - target: {fileID: 7258408167504752622, guid: e4e31b637e50b7446a0094ab16100bc1,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7258408167504752622, guid: e4e31b637e50b7446a0094ab16100bc1,
         type: 3}
