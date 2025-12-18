@@ -116,6 +116,13 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(waitingTime);
         currentRound++; //라운드 숫자 올리기
+        
+        // [추가됨] 다음 라운드로 넘어갈 때 타워 제한 수 증가 (+2)
+        if (TowerCount.Instance != null)
+        {
+            TowerCount.Instance.AddMaxLimit();
+        }
+
         StartRound();
     }
 
@@ -125,6 +132,13 @@ public class GameManager : MonoBehaviour
     void StartGame()
     {
         currentRound = 1;
+        
+        // [추가됨] 게임 시작 시 타워 제한 초기화 (기본 4개)
+        if (TowerCount.Instance != null)
+        {
+            TowerCount.Instance.InitTowerCount();
+        }
+
         Debug.Log("게임 시작");
         StartRound();
     }
@@ -150,6 +164,4 @@ public class GameManager : MonoBehaviour
             GameOver(false); //패배판정
         }
     }
-
-
 }

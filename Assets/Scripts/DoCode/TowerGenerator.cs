@@ -39,12 +39,6 @@ public class TowerGenerator : MonoBehaviour
         {
             TryPlaceRandomCommonTower();
         }
-
-        // [오른손(RTouch) - Button Two] (구버전) 타워 합성 - 필요 시 유지
-        // if (ARAVRInput.GetDown(ARAVRInput.Button.Two))
-        // {
-        //     TryMergeTower();
-        // }
     }
 
     // ============================
@@ -77,6 +71,13 @@ public class TowerGenerator : MonoBehaviour
     // ============================
     void TryPlaceRandomCommonTower()
     {
+        // [추가됨] 타워 설치 제한 확인
+        if (TowerCount.Instance != null && !TowerCount.Instance.CanPlaceTower())
+        {
+            ShowWarningUI(); // 제한 초과 시 경고 UI
+            return;
+        }
+
         if (commonTowers == null || commonTowers.Length == 0) return;
 
         // 왼손 위치에서 레이 발사
@@ -101,6 +102,12 @@ public class TowerGenerator : MonoBehaviour
         // 4. 생성 및 슬롯 등록
         GameObject tower = Instantiate(prefab, location.position, Quaternion.identity);
         slot.SetTower(tower);
+
+        // [추가됨] 설치된 타워 수 증가
+        if (TowerCount.Instance != null)
+        {
+            TowerCount.Instance.AddCurrentCount();
+        }
     }
 
     // ============================
@@ -150,6 +157,8 @@ public class TowerGenerator : MonoBehaviour
 
         // 1. 현재 슬롯의 기존 타워 삭제
         slot.RemoveTower();
+        // [추가됨] 삭제된 타워 카운트 감소
+        if (TowerCount.Instance != null) TowerCount.Instance.RemoveCurrentCount();
 
         // 2. 나머지 동일 태그 타워 중에서 하나 랜덤 삭제
         List<TowerData> candidates = new List<TowerData>();
@@ -176,6 +185,8 @@ public class TowerGenerator : MonoBehaviour
                 {
                     Destroy(toRemove.gameObject);
                 }
+                // [추가됨] 재료로 쓰인 타워 카운트 감소
+                if (TowerCount.Instance != null) TowerCount.Instance.RemoveCurrentCount();
             }
         }
 
@@ -190,6 +201,9 @@ public class TowerGenerator : MonoBehaviour
 
         GameObject newTower = Instantiate(nextPrefab, location.position, Quaternion.identity);
         slot.SetTower(newTower);
+
+        // [추가됨] 새로 생성된 상위 타워 카운트 증가
+        if (TowerCount.Instance != null) TowerCount.Instance.AddCurrentCount();
     }
 
     // =========================================================
@@ -208,6 +222,13 @@ public class TowerGenerator : MonoBehaviour
         // 3. 생성 및 슬롯 등록
         GameObject newTower = Instantiate(prefab, spawnPos, Quaternion.identity);
         targetSlot.SetTower(newTower);
+
+        // [추가됨] 합성 결과물 타워 카운트 증가
+        // (주의: 이 함수를 호출하는 쪽에서 재료 타워 삭제 시 RemoveCurrentCount를 호출해야 정확히 계산됨)
+        if (TowerCount.Instance != null)
+        {
+            TowerCount.Instance.AddCurrentCount();
+        }
     }
 
     // ============================

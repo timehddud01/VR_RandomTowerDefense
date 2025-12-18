@@ -9,6 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3545677685644357032}
+  - component: {fileID: 9206372339339256837}
+  - component: {fileID: 3683415184178270502}
   m_Layer: 0
   m_Name: Magic_LavaGuardian
   m_TagString: Untagged
@@ -25,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 7265361963296916112}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.77364665, z: 0, w: 0.6336173}
-  m_LocalPosition: {x: -0.253, y: 10.879999, z: 0.25899792}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -36,6 +38,39 @@ Transform:
   - {fileID: 7870574728592508209}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 101.365, z: 0}
+--- !u!114 &9206372339339256837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7265361963296916112}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e800d322ea3f344bb1394e32182a4f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  towerId: maagic_lavaGuardian
+  grade: 1
+  sellPrice: 10
+  ownerSlot: {fileID: 0}
+--- !u!114 &3683415184178270502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7265361963296916112}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cadc3632cc34c6478364270420ef42e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackRange: 50
+  fireRate: 1
+  damage: 10
+  enemyTag: Enemy
+  attackVFX: {fileID: 64436209982449426}
 --- !u!1001 &85859287073636048
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -501,7 +536,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2519904219617857873, guid: 64bc0ccc2de2dd64f92958be43b94997, type: 3}
+    - {fileID: 2100746334058917756, guid: 64bc0ccc2de2dd64f92958be43b94997, type: 3}
     m_RemovedGameObjects:
     - {fileID: 8147649387535227045, guid: 64bc0ccc2de2dd64f92958be43b94997, type: 3}
     - {fileID: 6875651192323078529, guid: 64bc0ccc2de2dd64f92958be43b94997, type: 3}
