@@ -13,6 +13,8 @@ TagManager:
   - magic_ice
   - Terrain
   - Bomb
+  - rare_lava
+  - rare_ice
   layers:
   - Default
   - TransparentFX
