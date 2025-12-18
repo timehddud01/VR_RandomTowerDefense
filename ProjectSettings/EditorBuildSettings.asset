@@ -14,6 +14,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/RandomTowerDefense.unity
     guid: cb10fcf411f6a6d46ad54d400a380cfc
+  - enabled: 1
+    path: Assets/Scenes/Outro.unity
+    guid: a85e72e0732713c40ae759b4463f9c0b
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 29945236d5ae31240a3ec2c517656db7,
       type: 2}

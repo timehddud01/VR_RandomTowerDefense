@@ -796,7 +796,9 @@ GameObject:
   - component: {fileID: 7067904244168668387}
   - component: {fileID: 6039008845632022742}
   - component: {fileID: 8773559082541177832}
-  - component: {fileID: 1953664359829886325}
+  - component: {fileID: 3303731292983094353}
+  - component: {fileID: 535198566045666969}
+  - component: {fileID: 986658165529382295}
   m_Layer: 0
   m_Name: NavTarget
   m_TagString: Enemy
@@ -812,12 +814,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3355511305217040411}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 5.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6388156351716805269}
+  m_Father: {fileID: 8845026374825988192}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!195 &6039008845632022742
 NavMeshAgent:
@@ -826,7 +828,7 @@ NavMeshAgent:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3355511305217040411}
-  m_Enabled: 0
+  m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
   m_Speed: 3.5
@@ -858,11 +860,11 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 3.027029, y: 3.034134, z: 63.68043}
   m_Center: {x: 0.22781934, y: -0.5986309, z: -31.340189}
---- !u!54 &1953664359829886325
+--- !u!54 &3303731292983094353
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -889,6 +891,42 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &535198566045666969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3355511305217040411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f59288c737399b40bd38fe72b422017, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 2000
+--- !u!114 &986658165529382295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3355511305217040411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad6f0bf32dbc0dd41949cfb1b952e322, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waypoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!1 &3568540366639270910
 GameObject:
   m_ObjectHideFlags: 0
@@ -939,7 +977,6 @@ Transform:
   - {fileID: 1359084888649778686}
   - {fileID: 3054425631430287266}
   - {fileID: 8468666067523705008}
-  - {fileID: 7067904244168668387}
   m_Father: {fileID: 8845026374825988192}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2359811836055724366
@@ -1592,13 +1629,11 @@ GameObject:
   m_Component:
   - component: {fileID: 8845026374825988192}
   - component: {fileID: 4245689171629801496}
-  - component: {fileID: 3086656462529020236}
   - component: {fileID: 1830360920618175876}
-  - component: {fileID: 7014548757352862378}
   - component: {fileID: 7023952211504322387}
   - component: {fileID: 2654908369699014077}
   m_Layer: 0
-  m_Name: BoneDragon 1
+  m_Name: BoneDragon 2
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1617,6 +1652,7 @@ Transform:
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 1
   m_Children:
+  - {fileID: 7067904244168668387}
   - {fileID: 4379038150146361151}
   - {fileID: 6388156351716805269}
   m_Father: {fileID: 0}
@@ -1642,19 +1678,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &3086656462529020236
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8865260563956863960}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f59288c737399b40bd38fe72b422017, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 1400
 --- !u!195 &1830360920618175876
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -1677,29 +1700,6 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &7014548757352862378
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8865260563956863960}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad6f0bf32dbc0dd41949cfb1b952e322, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  waypoints:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
 --- !u!54 &7023952211504322387
 Rigidbody:
   m_ObjectHideFlags: 0

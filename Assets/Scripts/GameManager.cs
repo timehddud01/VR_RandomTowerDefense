@@ -2,36 +2,39 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-
+using UnityEngine.SceneManagement; // 씬 관리를 위해 필수 추가
 
 public class GameManager : MonoBehaviour
 {
-    // Start is called before the first frame update\
+    [Header("Game Settings")]
+    public int totalRounds = 10; 
+    public int currentRound = 1; 
+    public int bossRoundCycle = 5; 
+    public int userLife = 10; 
 
-    public int totalRounds = 20; //전체 라운드 수
-    int currentRound = 1; //현재 라운드
-    public int bossRoundCycle = 5; //보스 생성 라운드 주기
-    public int userLife = 10; //플레이 목숨 개수
-
-    float waitingTime2NextRound = 3.0f; //다음 라운드까지 대기 시간
+    float waitingTime2NextRound = 3.0f; 
     private int enemiesAlive = 0;
+    
+    [Header("References")]
     public EnemyMaker enemyMaker;
     public TextMeshPro roundtext;
     
-    public static GameManager instance;//GameManager static으로 만듦
+    // [변경] SceneChange 스크립트 연결 (인스펙터에서 할당)
+    public SceneChange sceneChangeLoader; 
+
+    // [변경] 기존 로컬 UI 변수는 제거하거나 안 씀 (Outro 씬에서 처리하므로)
+    // public GameObject gameClearUI; 
+    // public float uiSpawnDistance = 2.0f; 
+
+    // [추가] 다음 씬(Outro)으로 승리/패배 여부를 넘겨주기 위한 정적 변수
+    public static bool isGameClearedResult = false;
+
+    public static GameManager instance;
     
     void Awake()
     {
-        //Awkake로 가장 먼저 실행되어 다른 스크립트의 start()와 겹치지 않게 하기
-        if (instance == null)
-        {
-            instance = this;
-        }
-        else
-        {   
-            //중복 방지
-            Destroy(gameObject);
-        }
+        if (instance == null) instance = this;
+        else Destroy(gameObject);
     }
 
     void Start()
@@ -39,54 +42,38 @@ public class GameManager : MonoBehaviour
         StartGame();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    //라운드 시작
     void StartRound()
     {   
         bool isBossRound = (currentRound % bossRoundCycle == 0);
-         //보스 라운드인가??
+         
          if (isBossRound)
         {
             enemiesAlive = 1;
         }
         else
         {
-            roundtext.text = "Round:\n" + currentRound;
-            // EnemyMaker의 로직을 참고하여 적 수를 계산합니다.
-            // 라운드가 오를수록 적의 수가 1씩 증가합니다.
+            if(roundtext != null)
+                roundtext.text = "Round:\n" + currentRound;
+            
             int waveSize = enemyMaker.firstEnemyPoolSize + (currentRound - 1);
             enemiesAlive = waveSize;
         }
 
-       
-        if ( isBossRound )
-        {
-            Debug.Log("보스 라운드");
-        }
-        else
-        {
-            Debug.Log(currentRound + "라운드 시작");
-            
-        }
+        if ( isBossRound ) Debug.Log("보스 라운드");
+        else Debug.Log(currentRound + "라운드 시작");
 
-        //적 생성 지시
         if (enemyMaker != null)
         {
             enemyMaker.CallEnemy(currentRound, isBossRound);
         }
     }
 
-    //라운드 종료
     public void EndRound()
     {
-        if ( currentRound >= totalRounds ) //마지막 라운드까지 가면
+        // 마지막 라운드를 클리어했다면 승리 처리
+        if ( currentRound >= totalRounds ) 
         {
-            GameOver(true); //승리판정
+            GameOver(true); 
             return;
         }
         else
@@ -96,16 +83,13 @@ public class GameManager : MonoBehaviour
                 BombPool.instance.ReplenishBomb();
             }
             Debug.Log(currentRound + "라운드 종료");
-
-            StartCoroutine(WaitUntilNextRound(waitingTime2NextRound)); //5초 후 다음 라운드 시작
+            StartCoroutine(WaitUntilNextRound(waitingTime2NextRound)); 
         }
     }
-        public void EnemyDestroyed()
+
+    public void EnemyDestroyed()
     {
         enemiesAlive--;
-        Debug.Log("적이 제거되었습니다. 남은 적: " + enemiesAlive);
-
-        // 살아있는 적이 더 이상 없으면 라운드를 종료합니다.
         if (enemiesAlive <= 0)
         {
             EndRound();
@@ -115,9 +99,8 @@ public class GameManager : MonoBehaviour
     IEnumerator WaitUntilNextRound(float waitingTime)
     {
         yield return new WaitForSeconds(waitingTime);
-        currentRound++; //라운드 숫자 올리기
+        currentRound++; 
         
-        // [추가됨] 다음 라운드로 넘어갈 때 타워 제한 수 증가 (+2)
         if (TowerCount.Instance != null)
         {
             TowerCount.Instance.AddMaxLimit();
@@ -126,42 +109,61 @@ public class GameManager : MonoBehaviour
         StartRound();
     }
 
-
-
-    //게임 시작
     void StartGame()
     {
         currentRound = 1;
-        
-        // [추가됨] 게임 시작 시 타워 제한 초기화 (기본 4개)
         if (TowerCount.Instance != null)
         {
             TowerCount.Instance.InitTowerCount();
         }
-
-        Debug.Log("게임 시작");
+        
+        // gameClearUI 관련 코드는 Outro 씬으로 이관되었으므로 삭제 혹은 주석 처리
+        // if (gameClearUI != null) gameClearUI.SetActive(false);
+        
         StartRound();
     }
-
-
-    //게임 종료
-    void EndGame()
-    {
-        
-    }
-
-    public void GameOver(bool isWin)
-    {
-        Debug.Log("게임 승리!");
-    }
     
-    public void LifeDecrease(int damage) // endPoint에 닿으면 목숨 차감 함수--> enemyPrefab에서 호출
+    public void LifeDecrease(int damage) 
     {
         userLife -= damage;
-        Debug.Log("남은 목숨: " + userLife);
         if (userLife <= 0)
         {
-            GameOver(false); //패배판정
+            GameOver(false); 
+        }
+    }
+
+    // =========================================================
+    // [수정] 게임 종료 처리 (씬 이동 로직으로 변경)
+    // =========================================================
+    public void GameOver(bool isWin)
+    {
+        // 1. 결과 상태 저장 (static 변수) -> Outro 씬에서 읽어감
+        isGameClearedResult = isWin;
+
+        if (isWin)
+        {
+            Debug.Log("게임 승리! Outro 씬으로 이동합니다.");
+            LoadOutroScene();
+        }
+        else
+        {
+            Debug.Log("게임 패배! Outro 씬으로 이동합니다.");
+            LoadOutroScene();
+        }
+    }
+
+    // 씬 이동 헬퍼 함수
+    void LoadOutroScene()
+    {
+        // SceneChange 스크립트가 연결되어 있다면 그것을 사용
+        if (sceneChangeLoader != null)
+        {
+            sceneChangeLoader.LoadNextScene("Outro");
+        }
+        else
+        {
+            // 연결 안 되어 있어도 작동하도록 안전장치
+            SceneManager.LoadScene("Outro");
         }
     }
 }

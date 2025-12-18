@@ -126,19 +126,38 @@ public class TowerAttack : MonoBehaviour
     {
         if (currentTarget == null) return;
 
+        bool hasHit = false; // 공격 성공 여부 체크
+
+        // 1. 일반 적(Enemy) 확인
         Enemy enemyComponent = currentTarget.GetComponent<Enemy>();
         if (enemyComponent != null)
         {
+            //print("wave attacking");
             enemyComponent.TakeDamage(damage);
-            
-            if (attackVFX != null)
+            hasHit = true;
+        }
+        // 2. 보스 적(BossEnemy) 확인 (일반 적이 아닐 경우)
+        else 
+        {
+            //print("theres a boss");
+            BossEnemy bossComponent = currentTarget.GetComponent<BossEnemy>();
+            if (bossComponent != null)
             {
-                GameObject vfx = Instantiate(attackVFX, currentTarget.position, Quaternion.identity);
-                ParticleSystem ps = vfx.GetComponent<ParticleSystem>();
-                Destroy(vfx, ps != null ? ps.main.duration : 2f);
+                //print("damage got in boss");
+                bossComponent.TakeDamage(damage);
+                hasHit = true;
             }
         }
 
+        // 3. 공격 성공 시 이펙트 재생
+        if (hasHit && attackVFX != null)
+        {
+            GameObject vfx = Instantiate(attackVFX, currentTarget.position, Quaternion.identity);
+            ParticleSystem ps = vfx.GetComponent<ParticleSystem>();
+            Destroy(vfx, ps != null ? ps.main.duration : 2f);
+        }
+
+        // 4. 공격 애니메이션 실행
         if (animator != null)
         {
             animator.SetTrigger("Attack");
