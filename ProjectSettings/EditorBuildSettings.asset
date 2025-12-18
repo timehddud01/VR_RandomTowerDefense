@@ -5,9 +5,15 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Inferno.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/Intro.unity
+    guid: fad4d32def24c7e4896c5a0b7fc755d7
+  - enabled: 1
+    path: Assets/Scenes/RandomTowerDefense.unity
+    guid: cb10fcf411f6a6d46ad54d400a380cfc
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 29945236d5ae31240a3ec2c517656db7,
       type: 2}
