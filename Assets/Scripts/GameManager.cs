@@ -30,6 +30,8 @@ public class GameManager : MonoBehaviour
     public static bool isGameClearedResult = false;
 
     public static GameManager instance;
+
+    public Video360Play videoController;
     
     void Awake()
     {
@@ -45,6 +47,17 @@ public class GameManager : MonoBehaviour
     void StartRound()
     {   
         bool isBossRound = (currentRound % bossRoundCycle == 0);
+
+
+        //---------------------
+        if (videoController != null)
+        {
+            videoController.PlayBlinkEffect(Color.blue, 1.0f,2); 
+        }
+
+
+
+        //---------------------
          
          if (isBossRound)
         {
