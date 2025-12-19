@@ -1,124 +1,130 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;  //UI image기능을 사용하기 위한 네임스페이스
-using UnityEngine.Video; //VideoPlayer를 제어하기 위한 네임스페이스
+using UnityEngine.UI;  // UI image 기능을 사용하기 위한 네임스페이스
+using UnityEngine.Video; // VideoPlayer를 제어하기 위한 네임스페이스
 
-
-//카메라의 시선을 처리하기 위한 기능
 public class GazePointerCtrl : MonoBehaviour
 {
+    [Header("UI Settings")]
     public Transform uiCanvas;
     public Image gazeImg;
-    Vector3 defaultScale; //ui를 오브젝트화 하기 때문에, 카메라와의 거리가 중요하다.자동으로 private이 됨
-    public float uiScaleVal = 1f; //1f, 1.0f 둘 다 가능
-
-    public string nextGameScene ="RandomTowerDefense";
-
+    public float uiScaleVal = 1f;
     
-    
-    float curGazeTime = 0 ; //시선이 머무르는 시간을 저장하기 위한 변수
-    public float gazeChargeTime = 3f; //게이지가 차는 시간을 체크하기 위한 기준 시간 3초(필요에 따라 수정)
-    private GameObject currentHitObj; //현재 시선이 머무르고 있는 오브젝트를 저장하기 위한 변수
+    [Header("Game Settings")]
+    public string nextGameScene = "RandomTowerDefense";
+    public float gazeChargeTime = 3f;
 
-    private Vector3 objectSize_OG; //원래 크기 기억
+    [Header("Video Control")]
+    // 제어할 외부 비디오 플레이어를 인스펙터에서 할당
+    public VideoPlayer targetVideoPlayer; 
 
-    // Start is called before the first frame update
+    // Internal Variables
+    private Vector3 defaultScale;
+    private float curGazeTime = 0;
+    private GameObject currentHitObj;
+    private Vector3 objectSize_OG;
+
     void Start()
     {
-        defaultScale = uiCanvas.localScale;  //오브젝트가 갖는 기본 스케일 값
-        curGazeTime = 0; //시선을 유지하는지 체크하기 위한 변수를 초기화
+        defaultScale = uiCanvas.localScale;
+        curGazeTime = 0;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
-        //2.카메라를 기준으로 전방의 레이를 설정한다.
-        Ray ray = new Ray(transform.position,transform.forward); //위치와 방향정보
-        RaycastHit hitInfo;//히트된 오브젝트의 정보를 담는다.
+        Ray ray = new Ray(transform.position, transform.forward);
+        RaycastHit hitInfo;
 
-        //3.레이에 부딪힌 경우에는 거리 값을 이용해 uiCanvas의 크기를 조절한다.
         if (Physics.Raycast(ray, out hitInfo))
         {
             if (uiCanvas != null)
             {
-                uiCanvas.position = hitInfo.point; // 닿은 위치 그대로
+                uiCanvas.position = hitInfo.point;
                 uiCanvas.localScale = defaultScale * uiScaleVal * hitInfo.distance;
-                uiCanvas.LookAt(transform.position); // 카메라는 쳐다보게 함
+                uiCanvas.LookAt(transform.position);
             }
             
-            if (hitInfo.transform.tag == "GazeObj")
+            if (hitInfo.transform.CompareTag("GazeObj"))
             {
-                if(currentHitObj != hitInfo.transform.gameObject)
+                // 새로운 오브젝트를 보거나, 기존에 아무것도 안 보고 있었을 때
+                if (currentHitObj != hitInfo.transform.gameObject)
                 {
-                    if(currentHitObj != null)
+                    if (currentHitObj != null)
                     {
-                        GazeExit(); //이전 오브젝트에서 시선이 벗어났을 때 처리
+                        GazeExit(); // 이전 오브젝트 정리
                     }
-                    currentHitObj = hitInfo.transform.gameObject; //현재 시선이 머무르고 있는 오브젝트 저장
-                    objectSize_OG = currentHitObj.transform.localScale; //현재 오브젝트의 원래 크기 저장
+                    currentHitObj = hitInfo.transform.gameObject;
+                    objectSize_OG = currentHitObj.transform.localScale;
                 }
-                GazeProcessing();
+                GazeProcessing(); // 시선 처리 (비디오 일시정지 포함)
             }
             else
             {
-                GazeExit();
+                GazeExit(); // GazeObj가 아닌 다른 물체를 볼 때
             }
-           
         }
-
         else
         {
-           uiCanvas.localScale = defaultScale * uiScaleVal;
-           uiCanvas.position = transform.position + (transform.forward * 2.0f); 
-           GazeExit();
-            
+            // 허공을 볼 때
+            uiCanvas.localScale = defaultScale * uiScaleVal;
+            uiCanvas.position = transform.position + (transform.forward * 2.0f); 
+            GazeExit();
         }
-        
         
         if (uiCanvas != null) uiCanvas.LookAt(transform.position);
 
-        curGazeTime = Mathf.Clamp(curGazeTime, 0, gazeChargeTime); //시선이 머문 시간을 0과 최댓값(여기에선 3초) 사이로 한다.
-        gazeImg.fillAmount = curGazeTime / gazeChargeTime; //0% ~100
-
-
+        // 시선 시간 클램핑 및 UI 갱신
+        curGazeTime = Mathf.Clamp(curGazeTime, 0, gazeChargeTime);
+        if (gazeImg != null) gazeImg.fillAmount = curGazeTime / gazeChargeTime;
     }
 
-    //위에서 무엇을 봤는지 결정한 것이고
-    //이제는 무엇을 할건지 결정하는 함수
     void GazeProcessing()
     {
         if (currentHitObj == null) return;
+
+        // [추가됨] 시선이 머무는 동안 비디오 일시 정지
+        if (targetVideoPlayer != null && targetVideoPlayer.isPlaying)
+        {
+            targetVideoPlayer.Pause();
+        }
 
         // 1. 시간 누적
         curGazeTime += Time.deltaTime;
         float ratio = Mathf.Clamp01(curGazeTime / gazeChargeTime);
 
-        // 2. 게이지 UI 채우기 (이미지 설정이 Filled여야 보임)
+        // 2. 게이지 UI 채우기
         if (gazeImg != null) 
         {
             gazeImg.fillAmount = ratio;
         }
 
-        
+        // 3. 색상 변경
         Renderer rend = currentHitObj.GetComponent<Renderer>();
         if (rend != null) rend.material.color = Color.Lerp(Color.white, Color.green, ratio);
 
-        // 4. 크기 변경 (저장된 크기 기준 1.3배)
+        // 4. 크기 변경
         currentHitObj.transform.localScale = Vector3.Lerp(objectSize_OG, objectSize_OG * 1.3f, ratio);
 
         // 5. 씬 이동
         if (curGazeTime >= gazeChargeTime)
         {
+            // 씬 이동 직전 비디오 완전 정지 (선택 사항, 안전장치)
+            if(targetVideoPlayer != null) targetVideoPlayer.Stop(); 
+            
             SceneManager.LoadScene(nextGameScene);
         }
     }
 
     void GazeExit()
     {
+        // [추가됨] 시선이 벗어나면 비디오 다시 재생
+        if (targetVideoPlayer != null && !targetVideoPlayer.isPlaying)
+        {
+            targetVideoPlayer.Play();
+        }
+
         if (currentHitObj == null) return;
 
         // 원래대로 복구
@@ -131,6 +137,4 @@ public class GazePointerCtrl : MonoBehaviour
         
         currentHitObj = null;
     }
-
 }
-

@@ -1212,6 +1212,7 @@ MonoBehaviour:
   uiScaleVal: 1
   nextGameScene: RandomTowerDefense
   gazeChargeTime: 3
+  targetVideoPlayer: {fileID: 2039131433}
 --- !u!1 &2039131431
 GameObject:
   m_ObjectHideFlags: 0
